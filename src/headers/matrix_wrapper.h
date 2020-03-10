@@ -10,19 +10,28 @@ template <class T>
 class MatrixWrapper {
  protected:
   std::unique_ptr<T> mat;
+
  public:
   MatrixWrapper(int rows, int cols) : mat(new T(rows, cols)) {}
 
-  inline T* getMat() {
+  inline T* getMat() const {
     return mat.get();
   }
 
-  inline char get(int row, int col) {
+  inline char get(int row, int col) const {
     return (*mat)(row, col);
   }
 
   inline void set(int row, int col, char val) {
     (*mat)(row, col) = val;
+  }
+
+  inline int size1() const {
+    return mat->size1();
+  }
+
+  inline int size2() const {
+    return mat->size2();
   }
 
   inline void insert(int row, int col, char val) {
