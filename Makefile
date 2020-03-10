@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -O2 -I../c++ -mcx16 -march=native -DCILK -fcilkplus -std=c++11
+CFLAGS = -Wall -O2 -I../c++ -mcx16 -march=native -DCILK -fcilkplus -std=c++17
 LIB_PATH=
 LIBS=
 SOURCES=$(wildcard src/*.cpp)
