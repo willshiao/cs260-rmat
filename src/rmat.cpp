@@ -15,11 +15,11 @@ RmatConfig::RmatConfig(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {
   }
 }
 
-void rmat(AdjMatrix &m, int nEdges, const RmatConfig &cfg) {
-  rmatHelper(m, nEdges, cfg, 0, 0, m.size1(), m.size2());
+void rmat(AdjMatrix *m, int nEdges, const RmatConfig &cfg) {
+  rmatHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2());
 }
 
-void rmatHelper(AdjMatrix &m, int nEdges, const RmatConfig &cfg, int x0, int y0,
+void rmatHelper(AdjMatrix *m, int nEdges, const RmatConfig &cfg, int x0, int y0,
                 int x1, int y1) {
   int xMid = (x0 + x1) / 2;
   int yMid = (y0 + y1) / 2;
@@ -28,7 +28,7 @@ void rmatHelper(AdjMatrix &m, int nEdges, const RmatConfig &cfg, int x0, int y0,
 
   if (nCells == 1) {
     // std::cout << "Setting edge at " << y0 << ", " << x0 << std::endl;
-    m(y0, x0) = 1;
+    (*m)(y0, x0) = 1;
     return;
   }
 
@@ -46,13 +46,13 @@ void rmatHelper(AdjMatrix &m, int nEdges, const RmatConfig &cfg, int x0, int y0,
   }
   if (nCells == 4) {
     // std::cout << "Setting 1" << std::endl;
-    m(y0, x0) = numA;
+    (*m)(y0, x0) = numA;
     // std::cout << "Setting 2: (" << y0 << "," << x1 << ")" << std::endl;
-    m(y0, x1 - 1) = numB;
+    (*m)(y0, x1 - 1) = numB;
     // std::cout << "Setting 3: (" << y1 << "," << x0 << ")" << std::endl;
-    m(y1 - 1, x0) = numC;
+    (*m)(y1 - 1, x0) = numC;
     // std::cout << "Setting 4" << std::endl;
-    m(y1 - 1, x1 - 1) = numD;
+    (*m)(y1 - 1, x1 - 1) = numD;
   } else if (nCells > 4) {
     rmatHelper(m, numA, cfg, x0, y0, xMid, yMid);
     rmatHelper(m, numB, cfg, xMid, y0, x1, yMid);
