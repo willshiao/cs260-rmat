@@ -48,11 +48,11 @@ void inline splitKey(uint64_t key, uint64_t *a, uint64_t *b,
 }
 
 double inline hash64Prob(uint64_t a) {
-  return static_cast<double>(hash64(a)) / 0xFFFFFFFFFFFFFFFF;
+  return static_cast<double>(hash64(a)) / UINT64_MAX;
 }
 
 double inline hash32Prob(uint32_t a) {
-  return static_cast<double>(hash32(a)) / 0xFFFFFFFF;
+  return static_cast<double>(hash32(a)) / UINT32_MAX;
 }
 
 }  // namespace util

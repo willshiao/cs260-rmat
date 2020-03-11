@@ -49,45 +49,52 @@ void rmatSeq(T *m, size_t nEdges, const RmatConfig &cfg) {
 template <class T>
 void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
                 size_t x0, size_t y0, size_t x1, size_t y1) {
+  // std::cout << "Call to " << x0 << ", " << y0 << ", " << x1 << ", " << y1 << " with " << nEdges << std::endl;
   if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;
   size_t yMid = (y0 + y1) / 2;
-  // size_t numA = 0, numB = 0, numC = 0, numD = 0;
-  cilk::reducer< cilk::op_add<size_t> > numA(0), numB(0), numC(0), numD(0);
-  size_t nCells = (x1 - x0) * (y1 - y0);
 
+  size_t nCells = (x1 - x0) * (y1 - y0);
   if (nCells == 1) {
     // std::cout << "Setting edge at " << y0 << ", " << x0 << std::endl;
     // (*m)(y0, x0) = 1;
     // if (nEdges > 1) std::cout << "Warning: " << nEdges << " wasted edges" << std::endl;
-    m->set(y0, x0, 5);
+    m->set(y0, x0, 1);
     return;
   }
+  cilk::reducer< cilk::op_add<size_t> > redA(0);
+  cilk::reducer< cilk::op_add<size_t> > redB(0);
+  cilk::reducer< cilk::op_add<size_t> > redC(0);
+  cilk::reducer< cilk::op_add<size_t> > redD(0);
 
-  // Could cilk_for this
   cilk_for(size_t i = 0; i < nEdges; ++i) {
     double prob = hash32Prob(i);
     if (prob <= cfg.totalA)
-      *numA += 1;
+      *redA += 1;
     else if (prob <= cfg.totalB)
-      *numB += 1;
+      *redB += 1;
     else if (prob <= cfg.totalC)
-      *numC += 1;
+      *redC += 1;
     else
-      *numD += 1;
+      *redD += 1;
   }
+  // Required for some reason, can't use .get_value() directly in recursive call
+  size_t numA = redA.get_value();
+  size_t numB = redB.get_value();
+  size_t numC = redC.get_value();
+  size_t numD = redD.get_value();
+
   if (nCells == 4) {
-    // if (nEdges > 4) std::cout << "Warning: " << nEdges << " > 4" << std::endl;
-    if (numA.get_value() > 0) m->set(y0, x0, 1);
-    if (numB.get_value() > 0) m->set(y0, x1 - 1, 1);
-    if (numC.get_value() > 0) m->set(y1 - 1, x0, 1);
-    if (numD.get_value() > 0) m->set(y1 - 1, x1 - 1, 1);
+    if (numA > 0) m->set(y0, x0, 1);
+    if (numB > 0) m->set(y0, x1 - 1, 1);
+    if (numC > 0) m->set(y1 - 1, x0, 1);
+    if (numD > 0) m->set(y1 - 1, x1 - 1, 1);
   } else if (nCells > 4) {
-    rmatHelper(m, numA.get_value(), cfg, x0, y0, xMid, yMid);
-    rmatHelper(m, numB.get_value(), cfg, xMid, y0, x1, yMid);
-    rmatHelper(m, numC.get_value(), cfg, x0, yMid, xMid, y1);
-    rmatHelper(m, numD.get_value(), cfg, xMid, yMid, x1, y1);
-    // cilk_sync;
+    cilk_spawn rmatHelper(m, numA, cfg, x0, y0, xMid, yMid);
+    cilk_spawn rmatHelper(m, numB, cfg, xMid, y0, x1, yMid);
+    cilk_spawn rmatHelper(m, numC, cfg, x0, yMid, xMid, y1);
+    rmatHelper(m, numD, cfg, xMid, yMid, x1, y1);
+    cilk_sync;
   }
 }
 
@@ -121,7 +128,7 @@ void rmatSeqHelper(T *m, size_t nEdges, const RmatConfig &cfg,
   // std::cout << numA << ", " << numB << ", " << numC << ", " << numD << std::endl;
 
   if (nCells == 4) {
-    if (nEdges > 4) std::cout << "Warning: " << nEdges << " > 4" << std::endl;
+    // if (nEdges > 4) std::cout << "Warning: " << nEdges << " > 4" << std::endl;
     if (numA > 0) m->set(y0, x0, 1);
     if (numB > 0) m->set(y0, x1 - 1, 1);
     if (numC > 0) m->set(y1 - 1, x0, 1);

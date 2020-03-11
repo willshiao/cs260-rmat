@@ -9,13 +9,15 @@
 
 class CustomMatrix {
  protected:
-  char *mat;
   size_t n;
+
  public:
+  char *mat;
   explicit CustomMatrix(size_t _n) : n(_n) {
     mat = new char[_n * _n];
     memset(mat, 0, n * n * sizeof(char));
   }
+  CustomMatrix(size_t _n, size_t _, size_t __) : CustomMatrix(_n) {}
   ~CustomMatrix() {
     delete[] mat;
   }
@@ -23,6 +25,7 @@ class CustomMatrix {
     return mat[row * n + col];
   }
   inline void set(size_t row, size_t col, char val) {
+    // std::cout << "Write to " << row << ", " << col << std::endl;
     mat[row * n + col] = val;
   }
   inline size_t size1() const {
