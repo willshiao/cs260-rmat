@@ -17,7 +17,7 @@
 #include "./matrix_wrapper.h"
 #include "./util.h"
 
-using will::util::hashProb;
+using will::util::hash32Prob;
 
 typedef std::pair<size_t, size_t> Edge;
 
@@ -63,7 +63,7 @@ void rmatHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
 
   // Could cilk_for this
   cilk_for(size_t i = 0; i < nEdges; ++i) {
-    double prob = hashProb(i);
+    double prob = hash32Prob(i);
     if (prob <= cfg.totalA)
       numA++;
     else if (prob <= cfg.totalB)
@@ -108,7 +108,7 @@ void rmatSeqHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
 
   // Could cilk_for this
   for (size_t i = 0; i < nEdges; ++i) {
-    double prob = hashProb(i);
+    double prob = hash32Prob(i);
     if (prob <= cfg.totalA)
       numA++;
     else if (prob <= cfg.totalB)

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include "headers/util.h"
@@ -22,35 +24,42 @@ int main() {
   //   cout << "Took: " << t.get_total() << endl;
   // }
 
+  ofstream fs;
   timer t;
-  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(50000, 50000);
+
+  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(10876, 10876);
   RmatConfig cfg(0.57, 0.19, 0.19);
+  cout << "Starting now" << endl;
+
   t.start();
-  rmat<AdjMatrix>(w, 500557100, cfg);
+  rmat<AdjMatrix>(w, 39994, cfg);
   t.stop();
-  cout << w->getMat() << endl;
+  fs.open("test.csv");
+  cout << "Finished generating graph, writing to file..." << endl;
+  will::matutil::writeAdjMatrix(*w, fs);
+  cout << "Done!" << endl;
   cout << "Took: " << t.get_total() << endl;
 
-  {
-    timer t;
-    MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(50000, 50000);
-    RmatConfig cfg(0.57, 0.19, 0.19);
-    t.start();
-    rmatSeq<AdjMatrix>(w, 505571000, cfg);
-    t.stop();
-    cout << w->getMat() << endl;
-    cout << "Took: " << t.get_total() << endl;
-  }
+  // {
+  //   timer t;
+  //   MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(50000, 50000);
+  //   RmatConfig cfg(0.57, 0.19, 0.19);
+  //   t.start();
+  //   rmatSeq<AdjMatrix>(w, 505571000, cfg);
+  //   t.stop();
+  //   cout << w->getMat() << endl;
+  //   cout << "Took: " << t.get_total() << endl;
+  // }
 
-  {
-    timer t;
-    RmatConfig cfg(0.57, 0.19, 0.19);
-    t.start();
-    std::list<Edge> res = listRmat(30000, 50557100, cfg);
-    t.stop();
-    cout << res.size() << endl;
-    cout << "Took: " << t.get_total() << endl;
-  }
+  // {
+  //   timer t;
+  //   RmatConfig cfg(0.57, 0.19, 0.19);
+  //   t.start();
+  //   std::list<Edge> res = listRmat(30000, 50557100, cfg);
+  //   t.stop();
+  //   cout << res.size() << endl;
+  //   cout << "Took: " << t.get_total() << endl;
+  // }
 
 
   // will::matutil::writeAdjMatrix(*w, std::cout);

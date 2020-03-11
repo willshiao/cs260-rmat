@@ -3,7 +3,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 using boost::numeric::ublas::matrix;
-using will::util::hashProb;
+using will::util::hash32Prob;
 
 RmatConfig::RmatConfig(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {
   d = _a + _b + _c;
@@ -38,7 +38,7 @@ void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red, size_t nEdge
 
   // Could cilk_for this
   cilk_for(size_t i = 0; i < nEdges; ++i) {
-    double prob = hashProb(i);
+    double prob = hash32Prob(i);
     if (prob <= cfg.totalA)
       numA++;
     else if (prob <= cfg.totalB)

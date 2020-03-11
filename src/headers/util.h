@@ -25,7 +25,7 @@ uint32_t inline hash32(uint32_t a) {
 }
 
 // From https://web.archive.org/web/20120720045250/http://www.cris.com/~Ttwang/tech/inthash.htm
-uint64_t hash64(uint64_t key) {
+uint64_t inline hash64(uint64_t key) {
   key = (~key) + (key << 21);
   key = key ^ (key >> 24);
   key = (key + (key << 3)) + (key << 8);
@@ -38,7 +38,7 @@ uint64_t hash64(uint64_t key) {
 
 constexpr uint64_t SPLIT_INTERVAL = (1L << 62) - 1;
 
-void splitKey(uint64_t key, uint64_t *a, uint64_t *b,
+void inline splitKey(uint64_t key, uint64_t *a, uint64_t *b,
               uint64_t *c, uint64_t *d) {
   uint64_t diff = key % SPLIT_INTERVAL;
   *a = diff;
