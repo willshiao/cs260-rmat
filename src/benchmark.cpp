@@ -12,8 +12,10 @@
 using namespace std;
 using namespace boost::numeric::ublas;
 
-constexpr size_t N = 10000;
-constexpr size_t N_EDGES = 1000000;
+// constexpr size_t N = 20000;
+// constexpr size_t N_EDGES = 4000000;
+constexpr size_t N = 1000;
+constexpr size_t N_EDGES = 25500;
 
 template <class T>
 inline void saveToFile(const string &name, T *mat, timer *t) {
@@ -70,14 +72,14 @@ int main() {
 
   cout << "===== Running sequential benchmarks =====" << endl;
   runWrappedBenchmark<MatrixWrapper<AdjMatrix>>(cfg, "boost-mat", false);
-  runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat", false);
+  // runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat", false);
   runWrappedBenchmark<MatrixWrapper<SparseAdjMat>>(cfg, "sparse-mat", false);
   runWrappedBenchmark<CustomMatrix>(cfg, "custom-mat", false);
 
   cout << "===== Running parallel benchmarks =====" << endl;
   runWrappedBenchmark<MatrixWrapper<AdjMatrix>>(cfg, "boost-mat", true);
-  runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat-mut",
-                                                 true, true);
+  // runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat-mut",
+                                                //  true, true);
   runWrappedBenchmark<MatrixWrapper<SparseAdjMat>>(cfg, "sparse-mat-mut",
                                                  true, true);
   runWrappedBenchmark<CustomMatrix>(cfg, "custom-mat", true);

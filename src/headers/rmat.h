@@ -19,6 +19,9 @@
 #include "./util.h"
 
 using will::util::hash32Prob;
+using will::util::hash64Prob;
+using will::util::hash64;
+using will::util::splitKey;
 
 struct RmatConfig {
   double a, b, c, d;
@@ -36,7 +39,7 @@ std::list<Edge> listRmat(size_t n, size_t nEdges, const RmatConfig &cfg);
 
 template <class T>
 void rmat(T *m, size_t nEdges, const RmatConfig &cfg) {
-  rmatHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2());
+  rmatHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2(), 42L);
 }
 
 template <class T>
@@ -46,7 +49,7 @@ void rmatSeq(T *m, size_t nEdges, const RmatConfig &cfg) {
 
 template <class T>
 void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
-                size_t x0, size_t y0, size_t x1, size_t y1) {
+                size_t x0, size_t y0, size_t x1, size_t y1, uint64_t seed) {
   // std::cout << "Call to " << x0 << ", " << y0 << ", " << x1 << ", " << y1 << " with " << nEdges << std::endl;
   if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;
@@ -66,7 +69,8 @@ void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
   cilk::reducer< cilk::op_add<size_t> > redD(0);
 
   cilk_for(size_t i = 0; i < nEdges; ++i) {
-    double prob = hash32Prob(i);
+    // double prob = hash32Prob(i);
+    double prob = hash64Prob(i + seed);
     if (prob <= cfg.totalA)
       *redA += 1;
     else if (prob <= cfg.totalB)
@@ -88,10 +92,12 @@ void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
     if (numC > 0) m->set(y1 - 1, x0, 1);
     if (numD > 0) m->set(y1 - 1, x1 - 1, 1);
   } else if (nCells > 4) {
-    cilk_spawn rmatHelper(m, numA, cfg, x0, y0, xMid, yMid);
-    cilk_spawn rmatHelper(m, numB, cfg, xMid, y0, x1, yMid);
-    cilk_spawn rmatHelper(m, numC, cfg, x0, yMid, xMid, y1);
-    rmatHelper(m, numD, cfg, xMid, yMid, x1, y1);
+    uint64_t seedA, seedB, seedC, seedD;
+    splitKey(hash64(seed), &seedA, &seedB, &seedC, &seedD);
+    cilk_spawn rmatHelper(m, numA, cfg, x0, y0, xMid, yMid, seedA);
+    cilk_spawn rmatHelper(m, numB, cfg, xMid, y0, x1, yMid, seedB);
+    cilk_spawn rmatHelper(m, numC, cfg, x0, yMid, xMid, y1, seedC);
+    rmatHelper(m, numD, cfg, xMid, yMid, x1, y1, seedD);
     cilk_sync;
   }
 }
