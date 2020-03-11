@@ -1,12 +1,22 @@
 #ifndef SRC_HEADERS_MATRIX_WRAPPER_H_
 #define SRC_HEADERS_MATRIX_WRAPPER_H_
 
+#include <cstdio>
 #include <iostream>
+#include <list>
 #include <memory>
 #include <mutex>
-#include <cstdio>
+#include <utility>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
+
+typedef std::pair<size_t, size_t> Edge;
+
+struct EdgeList {
+  std::list<Edge> *l;
+  size_t nodes;
+  EdgeList(std::list<Edge> *_l, size_t _nodes) : l(_l), nodes(_nodes) {}
+};
 
 class CustomMatrix {
  protected:
@@ -19,6 +29,7 @@ class CustomMatrix {
     memset(mat, 0, n * n * sizeof(char));
   }
   CustomMatrix(size_t _n, size_t _, size_t __) : CustomMatrix(_n) {}
+  CustomMatrix(size_t _n, size_t _, size_t __, bool ___) : CustomMatrix(_n) {}
   ~CustomMatrix() {
     delete[] mat;
   }

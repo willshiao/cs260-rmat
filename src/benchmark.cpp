@@ -27,12 +27,12 @@ inline void saveToFile(const string &name, T *mat, timer *t) {
 
 template <class T>
 inline void runWrappedBenchmark(const RmatConfig &cfg, const string &shortname,
-                                bool parallel = false) {
+                                bool parallel = false, bool useMutex = false) {
   string name = (parallel ? "par_" : "seq_") + shortname;
   cout << "Running " << name << " benchmark" << endl;
   timer t1, t2, t3;
   t1.start();
-  T *w = new T(N, N, 0);
+  T *w = new T(N, N, 0, useMutex);
   t1.stop();
   t2.start();
   if (parallel) rmat<T>(w, N_EDGES, cfg);
@@ -45,21 +45,21 @@ inline void runWrappedBenchmark(const RmatConfig &cfg, const string &shortname,
   cout << "Took " << t3.get_total() << " to save to file" << endl;
 }
 
-template <class T>
 inline void runListRmat(const RmatConfig &cfg, const string &shortname,
-                                bool parallel = false) {
+                                bool parallel = true) {
+  if (parallel != true)
+    cout << "WARNING: no sequential implementation yet" << endl;
   string name = (parallel ? "par_" : "seq_") + shortname;
   cout << "Running " << name << " benchmark" << endl;
   timer t1, t2, t3;
   t1.start();
-  T *w = new T(N, N, 0);
+  std::list<Edge> l;
   t1.stop();
   t2.start();
-  if (parallel) rmat<T>(w, N_EDGES, cfg);
-  else
-    rmatSeq<T>(w, N_EDGES, cfg);
+  l = listRmat(N, N_EDGES, cfg);
   t2.stop();
-  saveToFile<T>(name, w, &t3);
+  EdgeList el(&l, N);
+  saveToFile<EdgeList>(name, &el, &t3);
   cout << "Took " << t1.get_total() << " to allocate" << endl;
   cout << "Took " << t2.get_total() << " to run RMAT" << endl;
   cout << "Took " << t3.get_total() << " to save to file" << endl;
@@ -73,6 +73,15 @@ int main() {
   runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat", false);
   runWrappedBenchmark<MatrixWrapper<SparseAdjMat>>(cfg, "sparse-mat", false);
   runWrappedBenchmark<CustomMatrix>(cfg, "custom-mat", false);
+
+  cout << "===== Running parallel benchmarks =====" << endl;
+  runWrappedBenchmark<MatrixWrapper<AdjMatrix>>(cfg, "boost-mat", true);
+  runWrappedBenchmark<MatrixWrapper<CompAdjMat>>(cfg, "compressed-mat-mut",
+                                                 true, true);
+  runWrappedBenchmark<MatrixWrapper<SparseAdjMat>>(cfg, "sparse-mat-mut",
+                                                 true, true);
+  runWrappedBenchmark<CustomMatrix>(cfg, "custom-mat", true);
+  runListRmat(cfg, "custom-list");
 
   cout << "Done!" << endl;
   // {

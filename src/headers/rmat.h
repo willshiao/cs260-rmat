@@ -20,8 +20,6 @@
 
 using will::util::hash32Prob;
 
-typedef std::pair<size_t, size_t> Edge;
-
 struct RmatConfig {
   double a, b, c, d;
   double totalA, totalB, totalC;

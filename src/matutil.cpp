@@ -62,5 +62,16 @@ void writeAdjMatrix(const MatrixWrapper<SparseAdjMat> &m, std::ostream &os) {
   }
   os << std::flush;
 }
+
+void writeAdjMatrix(const EdgeList &l, std::ostream &os) {
+  os << "Source Target\n";
+  addSelf(l.nodes, os);
+  std::list<Edge> *li = l.l;
+
+  for (const Edge &e : *li) {
+    os << e.first << " " << e.second << "\n";
+  }
+  os << std::flush;
+}
 }  // namespace matutil
 }  // namespace will

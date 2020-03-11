@@ -2,6 +2,7 @@
 #define SRC_HEADERS_MATUTIL_H_
 
 #include <iostream>
+#include <list>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include "./matrix_wrapper.h"
@@ -21,6 +22,7 @@ void writeAdjMatrix(const MatrixWrapper<AdjMatrix> &m, std::ostream &os);
 void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os);
 void writeAdjMatrix(const MatrixWrapper<SparseAdjMat> &m, std::ostream &os);
 void writeAdjMatrix(const CustomMatrix &m, std::ostream &os);
+void writeAdjMatrix(const EdgeList &l, std::ostream &os);
 
 }  // namespace matutil
 }  // namespace will
