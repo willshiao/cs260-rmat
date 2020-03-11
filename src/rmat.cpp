@@ -6,7 +6,7 @@ using boost::numeric::ublas::matrix;
 using will::util::hash32Prob;
 
 RmatConfig::RmatConfig(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {
-  d = _a + _b + _c;
+  d = 1. - _a + _b + _c;
   totalA = _a;
   totalB = totalA + _b;
   totalC = totalB + _c;
@@ -26,6 +26,7 @@ std::list<Edge> listRmat(size_t n, size_t nEdges, const RmatConfig &cfg) {
 
 void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red, size_t nEdges,
                     const RmatConfig &cfg, size_t x0, size_t y0, size_t x1, size_t y1) {
+  if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;
   size_t yMid = (y0 + y1) / 2;
   size_t numA = 0, numB = 0, numC = 0, numD = 0;

@@ -27,14 +27,22 @@ int main() {
   ofstream fs;
   timer t;
 
-  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(10876, 10876);
+  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(1005, 1005, 0);
+  AdjMatrix *m = w->getMat();
+  for (int i = 0; i < 1005; ++i) {
+    for (int j = 0; j < 1005; ++j) {
+      (*m)(i, j) = 0;
+    }
+  }
+  // RmatConfig cfg;
   RmatConfig cfg(0.57, 0.19, 0.19);
   cout << "Starting now" << endl;
 
   t.start();
-  rmat<AdjMatrix>(w, 39994, cfg);
+  rmatSeq<AdjMatrix>(w, 25571, cfg);
+  // rmat<AdjMatrix>(w, 25571, cfg);
   t.stop();
-  fs.open("test.csv");
+  fs.open("data/gen-32bit_uniform.csv", ios::trunc);
   cout << "Finished generating graph, writing to file..." << endl;
   will::matutil::writeAdjMatrix(*w, fs);
   cout << "Done!" << endl;

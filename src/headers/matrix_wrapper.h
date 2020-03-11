@@ -12,7 +12,10 @@ class MatrixWrapper {
   std::unique_ptr<T> mat;
 
  public:
+  explicit MatrixWrapper(T *_mat) : mat(_mat) {}
   MatrixWrapper(size_t rows, size_t cols) : mat(new T(rows, cols)) {}
+  MatrixWrapper(size_t rows, size_t cols, char st)
+    : mat(new T(rows, cols, st)) {}
 
   inline T* getMat() const {
     return mat.get();

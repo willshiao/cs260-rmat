@@ -5,8 +5,10 @@ namespace will {
 namespace matutil {
 void writeAdjMatrix(const MatrixWrapper<AdjMatrix> &m, std::ostream &os) {
   os << "Source Target\n";
-  for (unsigned i = 0; i < m.size1(); ++i) {
-    for (unsigned j = 0; j < m.size2(); ++j) {
+  AdjMatrix *M = m.getMat();
+  for (size_t i = 0; i < m.size1(); ++i) {
+    for (size_t j = 0; j < m.size2(); ++j) {
+      // if ((*M)(i, j) > 0) os << i << " " << j << " - " << ((int) (*M)(i, j)) << "\n";
       if (m.get(i, j) > 0) {
         os << i << " " << j << "\n";
       }
@@ -17,8 +19,8 @@ void writeAdjMatrix(const MatrixWrapper<AdjMatrix> &m, std::ostream &os) {
 
 void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os) {
   os << "Source Target\n";
-  for (unsigned i = 0; i < m.size1(); ++i) {
-    for (unsigned j = 0; j < m.size2(); ++j) {
+  for (size_t i = 0; i < m.size1(); ++i) {
+    for (size_t j = 0; j < m.size2(); ++j) {
       if (m.get(i, j) > 0) {
         os << i << " " << j << "\n";
       }
@@ -29,8 +31,8 @@ void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os) {
 
 void writeAdjMatrix(const MatrixWrapper<SparseAdjMat> &m, std::ostream &os) {
   os << "Source Target\n";
-  for (unsigned i = 0; i < m.size1(); ++i) {
-    for (unsigned j = 0; j < m.size2(); ++j) {
+  for (size_t i = 0; i < m.size1(); ++i) {
+    for (size_t j = 0; j < m.size2(); ++j) {
       if (m.get(i, j) > 0) {
         os << i << " " << j << "\n";
       }

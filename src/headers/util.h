@@ -51,8 +51,8 @@ double inline hash64Prob(uint64_t a) {
   return static_cast<double>(hash64(a)) / 0xFFFFFFFFFFFFFFFF;
 }
 
-float inline hash32Prob(uint32_t a) {
-  return static_cast<float>(hash32(a)) / 0xFFFFFFFF;
+double inline hash32Prob(uint32_t a) {
+  return static_cast<double>(hash32(a)) / 0xFFFFFFFF;
 }
 
 }  // namespace util
