@@ -27,29 +27,23 @@ int main() {
   ofstream fs;
   timer t;
 
-  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(1024, 1024, 0);
-  AdjMatrix *m = w->getMat();
-  for (int i = 0; i < 1024; ++i) {
-    for (int j = 0; j < 1024; ++j) {
-      (*m)(i, j) = 0;
-    }
-  }
+  MatrixWrapper<CompAdjMat> *w = new MatrixWrapper<CompAdjMat>(1024, 1024, 0, true);
   // RmatConfig cfg;
   CustomMatrix *x = new CustomMatrix(200);
   RmatConfig cfg(0.57, 0.19, 0.19);
   cout << "Starting now" << endl;
 
   t.start();
+  rmat<MatrixWrapper<CompAdjMat>>(w, 50000, cfg);
   // rmatSeq<AdjMatrix>(w, 25571, cfg);
-  // rmat<AdjMatrix>(w, 25571, cfg);
   // rmat<CustomMatrix>(x, 25571, cfg);
-  rmat<CustomMatrix>(x, 5000, cfg);
+  // rmat<CustomMatrix>(x, 5000, cfg);
   // rmatSeq<CustomMatrix>(x, 5000, cfg);
   t.stop();
   fs.open("data/gen-32bit_uniform.csv", ios::trunc);
   cout << "Finished generating graph, writing to file..." << endl;
-  // will::matutil::writeAdjMatrix(*w, fs);
-  will::matutil::writeAdjMatrix(*x, fs);
+  will::matutil::writeAdjMatrix(*w, fs);
+  // will::matutil::writeAdjMatrix(*x, fs);
   cout << "Done!" << endl;
   cout << "Took: " << t.get_total() << endl;
 

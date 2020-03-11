@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <cstdio>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
@@ -40,12 +41,17 @@ template <class T>
 class MatrixWrapper {
  protected:
   std::unique_ptr<T> mat;
+  std::mutex mat_mut;
+  bool useMutex;
 
  public:
   explicit MatrixWrapper(T *_mat) : mat(_mat) {}
-  MatrixWrapper(size_t rows, size_t cols) : mat(new T(rows, cols)) {}
+  MatrixWrapper(size_t rows, size_t cols)
+    : mat(new T(rows, cols)), useMutex(false) {}
   MatrixWrapper(size_t rows, size_t cols, char st)
-    : mat(new T(rows, cols, st)) {}
+    : mat(new T(rows, cols, st)), useMutex(false) {}
+  MatrixWrapper(size_t rows, size_t cols, char st, bool _useMutex)
+    : mat(new T(rows, cols, st)), useMutex(_useMutex) {}
 
   inline T* getMat() const {
     return mat.get();
@@ -56,7 +62,9 @@ class MatrixWrapper {
   }
 
   inline void set(size_t row, size_t col, char val) {
+    if (useMutex) mat_mut.lock();
     (*mat)(row, col) = val;
+    if (useMutex) mat_mut.unlock();
   }
 
   inline size_t size1() const {

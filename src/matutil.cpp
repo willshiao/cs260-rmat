@@ -38,10 +38,11 @@ void writeAdjMatrix(const MatrixWrapper<AdjMatrix> &m, std::ostream &os) {
 void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os) {
   os << "Source Target\n";
   addSelf(m.size1(), os);
-  for (size_t i = 0; i < m.size1(); ++i) {
-    for (size_t j = 0; j < m.size2(); ++j) {
-      if (m.get(i, j) > 0) {
-        os << i << " " << j << "\n";
+  CompAdjMat *mat = m.getMat();
+  for (auto it1 = mat->begin1(); it1 != mat->end1(); ++it1) {
+    for (auto it2 = it1.begin(); it2 != it1.end(); ++it2) {
+      if (*it2 > 0) {
+        os << it2.index1() << " " << it2.index2() << "\n";
       }
     }
   }
@@ -51,10 +52,11 @@ void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os) {
 void writeAdjMatrix(const MatrixWrapper<SparseAdjMat> &m, std::ostream &os) {
   os << "Source Target\n";
   addSelf(m.size1(), os);
-  for (size_t i = 0; i < m.size1(); ++i) {
-    for (size_t j = 0; j < m.size2(); ++j) {
-      if (m.get(i, j) > 0) {
-        os << i << " " << j << "\n";
+  SparseAdjMat *mat = m.getMat();
+  for (auto it1 = mat->begin1(); it1 != mat->end1(); ++it1) {
+    for (auto it2 = it1.begin(); it2 != it1.end(); ++it2) {
+      if (*it2 > 0) {
+        os << it2.index1() << " " << it2.index2() << "\n";
       }
     }
   }
