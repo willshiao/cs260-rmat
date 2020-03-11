@@ -3,8 +3,35 @@
 
 #include <iostream>
 #include <memory>
+#include <cstdio>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
+
+class CustomMatrix {
+ protected:
+  char *mat;
+  size_t n;
+ public:
+  explicit CustomMatrix(size_t _n) : n(_n) {
+    mat = new char[_n * _n];
+    memset(mat, 0, n * n * sizeof(char));
+  }
+  ~CustomMatrix() {
+    delete[] mat;
+  }
+  inline char get(size_t row, size_t col) const {
+    return mat[row * n + col];
+  }
+  inline void set(size_t row, size_t col, char val) {
+    mat[row * n + col] = val;
+  }
+  inline size_t size1() const {
+    return n;
+  }
+  inline size_t size2() const {
+    return n;
+  }
+};
 
 template <class T>
 class MatrixWrapper {

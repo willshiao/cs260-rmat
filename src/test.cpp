@@ -35,16 +35,20 @@ int main() {
     }
   }
   // RmatConfig cfg;
+  CustomMatrix *x = new CustomMatrix(1005);
   RmatConfig cfg(0.57, 0.19, 0.19);
   cout << "Starting now" << endl;
 
   t.start();
-  rmatSeq<AdjMatrix>(w, 25571, cfg);
+  // rmatSeq<AdjMatrix>(w, 25571, cfg);
   // rmat<AdjMatrix>(w, 25571, cfg);
+  // rmat<CustomMatrix>(x, 25571, cfg);
+  // rmatSeq<CustomMatrix>(x, 25571, cfg);
   t.stop();
   fs.open("data/gen-32bit_uniform.csv", ios::trunc);
   cout << "Finished generating graph, writing to file..." << endl;
-  will::matutil::writeAdjMatrix(*w, fs);
+  // will::matutil::writeAdjMatrix(*w, fs);
+  will::matutil::writeAdjMatrix(*x, fs);
   cout << "Done!" << endl;
   cout << "Took: " << t.get_total() << endl;
 

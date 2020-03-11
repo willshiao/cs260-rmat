@@ -37,17 +37,17 @@ void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red,
 std::list<Edge> listRmat(size_t n, size_t nEdges, const RmatConfig &cfg);
 
 template <class T>
-void rmat(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg) {
+void rmat(T *m, size_t nEdges, const RmatConfig &cfg) {
   rmatHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2());
 }
 
 template <class T>
-void rmatSeq(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg) {
+void rmatSeq(T *m, size_t nEdges, const RmatConfig &cfg) {
   rmatSeqHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2());
 }
 
 template <class T>
-void rmatHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
+void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
                 size_t x0, size_t y0, size_t x1, size_t y1) {
   if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;
@@ -65,7 +65,7 @@ void rmatHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
   }
 
   // Could cilk_for this
-  for (size_t i = 0; i < nEdges; ++i) {
+  cilk_for(size_t i = 0; i < nEdges; ++i) {
     double prob = hash32Prob(i);
     if (prob <= cfg.totalA)
       *numA += 1;
@@ -92,7 +92,7 @@ void rmatHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
 }
 
 template <class T>
-void rmatSeqHelper(MatrixWrapper<T> *m, size_t nEdges, const RmatConfig &cfg,
+void rmatSeqHelper(T *m, size_t nEdges, const RmatConfig &cfg,
                 size_t x0, size_t y0, size_t x1, size_t y1) {
   if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;

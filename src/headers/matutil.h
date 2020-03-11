@@ -20,6 +20,7 @@ namespace matutil {
 void writeAdjMatrix(const MatrixWrapper<AdjMatrix> &m, std::ostream &os);
 void writeAdjMatrix(const MatrixWrapper<CompAdjMat> &m, std::ostream &os);
 void writeAdjMatrix(const MatrixWrapper<SparseAdjMat> &m, std::ostream &os);
+void writeAdjMatrix(const CustomMatrix &m, std::ostream &os);
 
 }  // namespace matutil
 }  // namespace will
