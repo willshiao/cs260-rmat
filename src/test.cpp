@@ -15,7 +15,7 @@ int main() {
   // {
   //   timer t;
   //   MatrixWrapper<SparseAdjMat> *w = new MatrixWrapper<SparseAdjMat>(5005, 5005);
-  //   RmatConfig cfg(0.45, 0.15, 0.15);
+  //   RmatConfig cfg(0.57, 0.19, 0.19);
   //   t.start();
   //   rmat<SparseAdjMat>(w, 55571, cfg);
   //   t.stop();
@@ -23,20 +23,20 @@ int main() {
   // }
 
   timer t;
-  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(30000, 30000);
-  RmatConfig cfg(0.45, 0.15, 0.15);
+  MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(50000, 50000);
+  RmatConfig cfg(0.57, 0.19, 0.19);
   t.start();
-  rmat<AdjMatrix>(w, 50557100, cfg);
+  rmat<AdjMatrix>(w, 500557100, cfg);
   t.stop();
   cout << w->getMat() << endl;
   cout << "Took: " << t.get_total() << endl;
 
   {
     timer t;
-    MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(30000, 30000);
-    RmatConfig cfg(0.45, 0.15, 0.15);
+    MatrixWrapper<AdjMatrix> *w = new MatrixWrapper<AdjMatrix>(50000, 50000);
+    RmatConfig cfg(0.57, 0.19, 0.19);
     t.start();
-    rmatSeq<AdjMatrix>(w, 50557100, cfg);
+    rmatSeq<AdjMatrix>(w, 505571000, cfg);
     t.stop();
     cout << w->getMat() << endl;
     cout << "Took: " << t.get_total() << endl;
@@ -44,9 +44,9 @@ int main() {
 
   {
     timer t;
-    RmatConfig cfg(0.45, 0.15, 0.15);
+    RmatConfig cfg(0.57, 0.19, 0.19);
     t.start();
-    auto res = listRmat(30000, 50557100, cfg);
+    std::list<Edge> res = listRmat(30000, 50557100, cfg);
     t.stop();
     cout << res.size() << endl;
     cout << "Took: " << t.get_total() << endl;

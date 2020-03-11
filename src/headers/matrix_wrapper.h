@@ -12,29 +12,29 @@ class MatrixWrapper {
   std::unique_ptr<T> mat;
 
  public:
-  MatrixWrapper(int rows, int cols) : mat(new T(rows, cols)) {}
+  MatrixWrapper(size_t rows, size_t cols) : mat(new T(rows, cols)) {}
 
   inline T* getMat() const {
     return mat.get();
   }
 
-  inline char get(int row, int col) const {
+  inline char get(size_t row, size_t col) const {
     return (*mat)(row, col);
   }
 
-  inline void set(int row, int col, char val) {
+  inline void set(size_t row, size_t col, char val) {
     (*mat)(row, col) = val;
   }
 
-  inline int size1() const {
+  inline size_t size1() const {
     return mat->size1();
   }
 
-  inline int size2() const {
+  inline size_t size2() const {
     return mat->size2();
   }
 
-  inline void insert(int row, int col, char val) {
+  inline void insert(size_t row, size_t col, char val) {
     mat->insert_element(row, col, val);
   }
 };

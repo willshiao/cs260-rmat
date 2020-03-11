@@ -15,7 +15,7 @@ RmatConfig::RmatConfig(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {
   }
 }
 
-std::list<Edge> listRmat(int n, int nEdges, const RmatConfig &cfg) {
+std::list<Edge> listRmat(size_t n, size_t nEdges, const RmatConfig &cfg) {
   cilk::reducer<cilk::op_list_append<Edge>> red;
   listRmatHelper(red, nEdges, cfg, 0, 0, n, n);
   const std::list<Edge> &edgeList = red.get_value();
@@ -24,12 +24,12 @@ std::list<Edge> listRmat(int n, int nEdges, const RmatConfig &cfg) {
   return std::move(edgeList);
 }
 
-void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red, int nEdges,
-                    const RmatConfig &cfg, int x0, int y0, int x1, int y1) {
-  int xMid = (x0 + x1) / 2;
-  int yMid = (y0 + y1) / 2;
-  int numA = 0, numB = 0, numC = 0, numD = 0;
-  int nCells = (x1 - x0) * (y1 - y0);
+void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red, size_t nEdges,
+                    const RmatConfig &cfg, size_t x0, size_t y0, size_t x1, size_t y1) {
+  size_t xMid = (x0 + x1) / 2;
+  size_t yMid = (y0 + y1) / 2;
+  size_t numA = 0, numB = 0, numC = 0, numD = 0;
+  size_t nCells = (x1 - x0) * (y1 - y0);
 
   if (nCells == 1) {
     red->push_back({y0, x0});
@@ -37,7 +37,7 @@ void listRmatHelper(cilk::reducer<cilk::op_list_append<Edge>> &red, int nEdges,
   }
 
   // Could cilk_for this
-  cilk_for(int i = 0; i < nEdges; ++i) {
+  cilk_for(size_t i = 0; i < nEdges; ++i) {
     double prob = hashProb(i);
     if (prob <= cfg.totalA)
       numA++;
