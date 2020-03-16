@@ -12,40 +12,40 @@
 using namespace std;
 using namespace boost::numeric::ublas;
 
-int main() {
-  // AdjMatrix *m = new AdjMatrix(1005, 1005);
-  // {
-  //   timer t;
-  //   MatrixWrapper<SparseAdjMat> *w = new MatrixWrapper<SparseAdjMat>(5005, 5005);
-  //   RmatConfig cfg(0.57, 0.19, 0.19);
-  //   t.start();
-  //   rmat<SparseAdjMat>(w, 55571, cfg);
-  //   t.stop();
-  //   cout << "Took: " << t.get_total() << endl;
-  // }
+int main(int argc, char** argv) {
+  uint64_t n = atol(argv[1]);
+  uint64_t m = atol(argv[2]);
 
-  ofstream fs;
-  timer t;
-
-  MatrixWrapper<CompAdjMat> *w = new MatrixWrapper<CompAdjMat>(1024, 1024, 0, true);
-  // RmatConfig cfg;
-  CustomMatrix *x = new CustomMatrix(200);
   RmatConfig cfg(0.57, 0.19, 0.19);
-  cout << "Starting now" << endl;
-
+  CustomMatrix *mat = new CustomMatrix(n);
+  timer t;
   t.start();
-  rmat<MatrixWrapper<CompAdjMat>>(w, 50000, cfg);
+  rmat<CustomMatrix>(mat, m, cfg);
+  t.stop();
+  cout << "Took: " << t.get_total() << endl;
+
+  // timer t;
+  // t.start();
+  // list<Edge> l = listRmat(n, m, cfg);
+  // t.stop();
+  // cout << "Took: " << t.get_total() << endl;
+
+  // fs.open("data/gen-32bit_uniform.csv", ios::trunc);
+  // MatrixWrapper<CustomMatrix> *w = new MatrixWrapper<CustomMatrix>(1024, 1024, 0, true);
+  // ofstream fs;
+  // timer t;
+
+  // RmatConfig cfg;
+  // cout << "Starting now" << endl;
+
+  // rmat<MatrixWrapper<CompAdjMat>>(w, 50000, cfg);
   // rmatSeq<AdjMatrix>(w, 25571, cfg);
-  // rmat<CustomMatrix>(x, 25571, cfg);
   // rmat<CustomMatrix>(x, 5000, cfg);
   // rmatSeq<CustomMatrix>(x, 5000, cfg);
-  t.stop();
-  fs.open("data/gen-32bit_uniform.csv", ios::trunc);
-  cout << "Finished generating graph, writing to file..." << endl;
-  will::matutil::writeAdjMatrix(*w, fs);
+  // cout << "Finished generating graph, writing to file..." << endl;
+  // will::matutil::writeAdjMatrix(*w, fs);
   // will::matutil::writeAdjMatrix(*x, fs);
-  cout << "Done!" << endl;
-  cout << "Took: " << t.get_total() << endl;
+  // cout << "Done!" << endl;
 
   // {
   //   timer t;

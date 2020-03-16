@@ -44,7 +44,7 @@ void rmat(T *m, size_t nEdges, const RmatConfig &cfg) {
 
 template <class T>
 void rmatSeq(T *m, size_t nEdges, const RmatConfig &cfg) {
-  rmatSeqHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2());
+  rmatSeqHelper(m, nEdges, cfg, 0, 0, m->size1(), m->size2(), 42L);
 }
 
 template <class T>
@@ -104,7 +104,7 @@ void rmatHelper(T *m, size_t nEdges, const RmatConfig &cfg,
 
 template <class T>
 void rmatSeqHelper(T *m, size_t nEdges, const RmatConfig &cfg,
-                size_t x0, size_t y0, size_t x1, size_t y1) {
+                size_t x0, size_t y0, size_t x1, size_t y1, uint64_t seed) {
   if (nEdges == 0) return;
   size_t xMid = (x0 + x1) / 2;
   size_t yMid = (y0 + y1) / 2;
@@ -119,7 +119,7 @@ void rmatSeqHelper(T *m, size_t nEdges, const RmatConfig &cfg,
 
   // Could cilk_for this
   for (size_t i = 0; i < nEdges; ++i) {
-    double prob = hash32Prob(static_cast<uint32_t>(i));
+    double prob = hash64Prob(seed + i);
     if (prob <= cfg.totalA)
       numA++;
     else if (prob <= cfg.totalB)
@@ -138,10 +138,12 @@ void rmatSeqHelper(T *m, size_t nEdges, const RmatConfig &cfg,
     if (numC > 0) m->set(y1 - 1, x0, 1);
     if (numD > 0) m->set(y1 - 1, x1 - 1, 1);
   } else if (nCells > 4) {
-    rmatSeqHelper(m, numA, cfg, x0, y0, xMid, yMid);
-    rmatSeqHelper(m, numB, cfg, xMid, y0, x1, yMid);
-    rmatSeqHelper(m, numC, cfg, x0, yMid, xMid, y1);
-    rmatSeqHelper(m, numD, cfg, xMid, yMid, x1, y1);
+    uint64_t seedA, seedB, seedC, seedD;
+    splitKey(hash64(seed), &seedA, &seedB, &seedC, &seedD);
+    rmatSeqHelper(m, numA, cfg, x0, y0, xMid, yMid, seedA);
+    rmatSeqHelper(m, numB, cfg, xMid, y0, x1, yMid, seedB);
+    rmatSeqHelper(m, numC, cfg, x0, yMid, xMid, y1, seedC);
+    rmatSeqHelper(m, numD, cfg, xMid, yMid, x1, y1, seedD);
   }
 }
 
